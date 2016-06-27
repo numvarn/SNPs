@@ -1,3 +1,5 @@
+# Code by Phisan Sookkhee and Sirikanlaya Sookkhee
+
 # Funciton for generate only one new genotype
 # @param genotype : matrix for store genotype data from CSV file
 # @param dis_snp_pos : position of SNPs for predict 'Case' or 'Control'
@@ -8,18 +10,18 @@ generateGenotype <- function(genotypes, dis_snp_pos) {
      set.seed(as.numeric(Sys.time()))
      sample_total <- nrow(genotypes)
      samples_index <- sample(1:sample_total, 2, replace = T)
-     
+
      # @gen: Step 2 - calculate x_spec
      x_spec <- as.numeric(genotypes[samples_index[1], dis_snp_pos]
                           + genotypes[samples_index[2], dis_snp_pos])
-     
+
      # @gen: Step 3 - Find probabiliy value using logistic regression
      alpha <- 0.0
      gene_effect <- 0.0
-     
+
      exp_value <- exp(alpha + (gene_effect * x_spec))
      prob <- exp_value / (1 + exp_value)
-     
+
      # @gen: Step 4 - Using uniform random to cutoff \
      #                new genotype is 'Case' or 'Control'
      cutoff_value <- runif(1, 0, 1)
@@ -28,15 +30,15 @@ generateGenotype <- function(genotypes, dis_snp_pos) {
      }else {
           disease <- 0
      }
-     
+
      # @gen: Step 5 - create new Individual by add vector A and vector B together
      tmp_genotype <-
           genotypes[samples_index[1],] + genotypes[samples_index[2],]
      tmp_genotype <- as.list(tmp_genotype)
-     
+
      # @gen: step 6 - insert disease or Y value into fist index of list
      new_genotype <- append(tmp_genotype, disease, 0)
-     
+
      # @gen : step 7 - return only one new genotype
      return(new_genotype)
 }
@@ -77,18 +79,18 @@ case_index  <- 0
 control_index <- number_of_case
 
 while (case_index < number_of_case || control_index < number_of_population) {
-     
+
      all_data_index <- -1
-     
+
      # Call function generateGenotype
      # generateGenotype return new genotype as a List
      new_genotype <- generateGenotype(genotypes, dis_snp_pos)
-     
+
      # Classify genotypes between 'Case' and 'Control' by using Y value
      # y_value = 1 is 'Case'
      # y_value = 0 is 'Control'
      y_value <- new_genotype[[1]]
-     
+
      if (y_value == 1 && case_index < number_of_case) {
           case_index <- case_index + 1
           all_data_index <- case_index
@@ -97,7 +99,7 @@ while (case_index < number_of_case || control_index < number_of_population) {
           control_index <- control_index + 1
           all_data_index <- control_index
      }
-     
+
      # Store new gentoype with Y value into all_data
      # and classify it is 'Case' or 'Control'
      if (all_data_index != -1) {
