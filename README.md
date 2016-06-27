@@ -1,2 +1,1 @@
-# SNPs
-Phisan Sookkhee
+# SNPsR
